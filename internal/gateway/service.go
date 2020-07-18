@@ -6,33 +6,47 @@ import (
 	"colossus/pkg/status"
 	"context"
 	"fmt"
+	"log"
 
 	"github.com/hashicorp/consul/api"
-
+	"github.com/hashicorp/consul/connect"
 	"github.com/rs/xid"
 )
 
 type Service struct {
+	client  *api.Client
 	cache   *cache.Cache
-	health  *api.Health
 	clients map[int]aiv1.AIServiceClient
 }
 
 func NewService(
+	client *api.Client,
 	c *cache.Cache,
-	health *api.Health,
 	names map[int]string,
-) *Service {
+) (*Service, error) {
 	for eventType, name := range names {
 		fmt.Println(eventType, name)
 	}
 
-	health.Service("storage", "", true, nil)
+	s1, err := connect.NewService("gateway", client)
+	if err != nil {
+		return nil, err
+	}
+	defer func() {
+		if err := s1.Close(); err != nil {
+			log.Println(err)
+		}
+	}()
+
+	httpClient := s1.HTTPClient()
+	rsp, err := httpClient.Get("http://storage.service.consul/ping")
+	log.Println(rsp, err)
 
 	return &Service{
+		client:  client,
 		cache:   c,
 		clients: nil,
-	}
+	}, nil
 }
 
 func (s *Service) Process(ctx context.Context, id string, eventType int) (ProcessInfo, error) {

@@ -14,6 +14,8 @@ import (
 	"colossus/internal/pkg/fx/zapfx"
 	"colossus/pkg/cache"
 
+	"go.uber.org/zap"
+
 	"github.com/hashicorp/consul/api"
 
 	"google.golang.org/grpc"
@@ -45,14 +47,19 @@ func main() {
 type params struct {
 	fx.In
 
+	Sugar  *zap.SugaredLogger
+	Client *api.Client
 	Cache  *cache.Cache
-	Health *api.Health
 	Server *grpc.Server
 	Names  map[int]string `name:"names"`
 }
 
 func register(p params) {
-	service := gateway.NewService(p.Cache, p.Health, p.Names)
+	service, err := gateway.NewService(p.Client, p.Cache, p.Names)
+	if err != nil {
+		p.Sugar.Fatal(err)
+	}
+
 	handler := gateway.NewHandler(service)
 	handler.Register(p.Server)
 }
