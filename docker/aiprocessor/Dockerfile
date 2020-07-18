@@ -5,8 +5,8 @@ COPY go.mod .
 COPY go.sum .
 RUN go mod download
 COPY . .
-RUN go build -o storage cmd/storage/main.go
+RUN go build -o aiprocessor cmd/aiprocessor/main.go
 
 FROM gcr.io/distroless/base-debian10
-COPY --from=builder /go/src/colossus/storage /
-CMD ["/storage"]
+COPY --from=builder /go/src/colossus/aiprocessor /
+CMD ["/aiprocessor"]

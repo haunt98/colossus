@@ -14,12 +14,10 @@ var Module = fx.Provide(
 	provideKV,
 )
 
-const consulAdressEnv = "CONSUL_ADDRESS"
-
 func provideClient(sugar *zap.SugaredLogger) *api.Client {
-	address := os.Getenv(consulAdressEnv)
+	address := os.Getenv("CONSUL_ADDRESS")
 	if address == "" {
-		sugar.Fatalf("Empty %s", consulAdressEnv)
+		sugar.Fatalf("Empty CONSUL_ADDRESS")
 	}
 
 	client, err := api.NewClient(&api.Config{
