@@ -26,7 +26,7 @@ require (
 	github.com/rs/xid v1.2.1
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/streadway/amqp v1.0.0
-	github.com/tidwall/gjson v1.6.0 // indirect
+	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/pretty v1.0.1 // indirect
 	go.opentelemetry.io/otel v0.8.0 // indirect
 	go.uber.org/fx v1.13.0

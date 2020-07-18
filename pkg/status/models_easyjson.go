@@ -17,7 +17,7 @@ var (
 	_ easyjson.Marshaler
 )
 
-func easyjsonD2b7633eDecodeAiServicesPkgStatus(in *jlexer.Lexer, out *Status) {
+func easyjsonD2b7633eDecodeColossusPkgStatus(in *jlexer.Lexer, out *Status) {
 	isTopLevel := in.IsStart()
 	if in.IsNull() {
 		if isTopLevel {
@@ -50,7 +50,7 @@ func easyjsonD2b7633eDecodeAiServicesPkgStatus(in *jlexer.Lexer, out *Status) {
 		in.Consumed()
 	}
 }
-func easyjsonD2b7633eEncodeAiServicesPkgStatus(out *jwriter.Writer, in Status) {
+func easyjsonD2b7633eEncodeColossusPkgStatus(out *jwriter.Writer, in Status) {
 	out.RawByte('{')
 	first := true
 	_ = first
@@ -70,23 +70,23 @@ func easyjsonD2b7633eEncodeAiServicesPkgStatus(out *jwriter.Writer, in Status) {
 // MarshalJSON supports json.Marshaler interface
 func (v Status) MarshalJSON() ([]byte, error) {
 	w := jwriter.Writer{}
-	easyjsonD2b7633eEncodeAiServicesPkgStatus(&w, v)
+	easyjsonD2b7633eEncodeColossusPkgStatus(&w, v)
 	return w.Buffer.BuildBytes(), w.Error
 }
 
 // MarshalEasyJSON supports easyjson.Marshaler interface
 func (v Status) MarshalEasyJSON(w *jwriter.Writer) {
-	easyjsonD2b7633eEncodeAiServicesPkgStatus(w, v)
+	easyjsonD2b7633eEncodeColossusPkgStatus(w, v)
 }
 
 // UnmarshalJSON supports json.Unmarshaler interface
 func (v *Status) UnmarshalJSON(data []byte) error {
 	r := jlexer.Lexer{Data: data}
-	easyjsonD2b7633eDecodeAiServicesPkgStatus(&r, v)
+	easyjsonD2b7633eDecodeColossusPkgStatus(&r, v)
 	return r.Error()
 }
 
 // UnmarshalEasyJSON supports easyjson.Unmarshaler interface
 func (v *Status) UnmarshalEasyJSON(l *jlexer.Lexer) {
-	easyjsonD2b7633eDecodeAiServicesPkgStatus(l, v)
+	easyjsonD2b7633eDecodeColossusPkgStatus(l, v)
 }
