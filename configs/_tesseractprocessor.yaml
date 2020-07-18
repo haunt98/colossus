@@ -1,0 +1,25 @@
+minio:
+  endpoint: localhost:9000
+  accesskeyid: minioadmin
+  secretaccesskey: minioadmin
+  usessl: false
+
+redis:
+  addr: localhost:6379
+  password:
+
+rabbitmq:
+  url: amqp://guest:guest@localhost:5672/
+
+bucket:
+  name: pandora
+
+storage:
+  cache:
+    prefix: storage
+
+ai:
+  cache:
+    prefix: tesseract
+  queue:
+    name: tesseract

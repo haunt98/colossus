@@ -1,0 +1,21 @@
+grpc:
+  port: 14122
+
+minio:
+  endpoint: localhost:9000
+  accesskeyid: minioadmin
+  secretaccesskey: minioadmin
+  usessl: false
+
+redis:
+  addr: localhost:6379
+  password:
+
+rabbitmq:
+  url: amqp://guest:guest@localhost:5672/
+
+gateway:
+  cache:
+    prefix: gateway
+  urls:
+    tesseract: localhost:14123

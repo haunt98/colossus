@@ -1,0 +1,50 @@
+syntax = "proto3";
+
+package api.gateway.v1;
+
+option go_package = ".;gatewayv1";
+
+message PingRequest {}
+
+message PingResponse {}
+
+message ProcessRequest {
+  int32 client_id = 1;
+
+  // data is JSON string, has field id, event_type
+  string data = 2;
+
+  int64 request_date = 3;
+
+  // sig == sha256(client_id|trans_id|request_date|client_key)
+  string sig = 4;
+}
+
+message ProcessResponse {
+  int32 return_code = 1;
+  string return_message = 2;
+  string trans_id = 3;
+}
+
+message GetStatusRequest {
+  int32 client_id = 1;
+  string trans_id = 2;
+  int64 request_date = 3;
+
+  // sig == sha256(client_id|trans_id|request_date|client_key)
+  string sig = 4;
+}
+
+message GetStatusResponse {
+  int32 return_code = 1;
+  string return_message = 2;
+
+  // data is JSON string, has field id
+  string data = 3;
+}
+
+service GatewayService {
+  rpc Ping(PingRequest) returns (PingResponse);
+  rpc Process(ProcessRequest) returns (ProcessResponse);
+  rpc GetStatus(GetStatusRequest) returns (GetStatusResponse);
+}

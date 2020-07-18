@@ -1,0 +1,10 @@
+gin:
+  port: 14121
+  mode: debug
+
+bucket:
+  name: pandora
+
+storage:
+  cache:
+    prefix: storage
