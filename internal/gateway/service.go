@@ -29,6 +29,7 @@ func NewService(
 
 	return &Service{
 		cache:   c,
+		agent:   agent,
 		clients: nil,
 	}
 }

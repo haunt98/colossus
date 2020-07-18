@@ -15,6 +15,9 @@ type ProvideBucketFn func(sugar *zap.SugaredLogger, client *minio.Client, kv *ap
 func InjectBucket(project string) ProvideBucketFn {
 	return func(sugar *zap.SugaredLogger, client *minio.Client, kv *api.KV) *bucket.Bucket {
 		conf, err := newConfig(kv, project)
+		if err != nil {
+			sugar.Error(err)
+		}
 
 		b, err := bucket.NewBucket(client, conf.name, bucket.DefaultPresignedExpiration())
 		if err != nil {
