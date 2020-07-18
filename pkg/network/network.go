@@ -5,6 +5,8 @@ import (
 	"net"
 )
 
+// Random copy on the Internet
+// God please forgives me
 func GetIP() (string, error) {
 	addresses, err := net.InterfaceAddrs()
 	if err != nil {
@@ -13,9 +15,9 @@ func GetIP() (string, error) {
 
 	for _, address := range addresses {
 		ipNet, ok := address.(*net.IPNet)
-		if ok && !ipNet.IP.IsLoopback() && ipNet.IP.To4() != nil {
-			ip := ipNet.IP.String()
-			return ip, nil
+		if ok && ipNet.IP.IsGlobalUnicast() && !ipNet.IP.IsLoopback() &&
+			ipNet.IP.To4() != nil && ipNet.IP.To16() != nil {
+			return ipNet.IP.String(), nil
 		}
 	}
 	return "", nil

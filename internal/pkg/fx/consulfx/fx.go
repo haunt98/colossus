@@ -11,6 +11,7 @@ import (
 var Module = fx.Provide(
 	provideClient,
 	provideAgent,
+	provideHealth,
 	provideKV,
 )
 
@@ -32,6 +33,10 @@ func provideClient(sugar *zap.SugaredLogger) *api.Client {
 
 func provideAgent(client *api.Client) *api.Agent {
 	return client.Agent()
+}
+
+func provideHealth(client *api.Client) *api.Health {
+	return client.Health()
 }
 
 func provideKV(client *api.Client) *api.KV {

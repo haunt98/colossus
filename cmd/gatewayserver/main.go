@@ -2,6 +2,7 @@ package main
 
 import (
 	"colossus/internal/gateway"
+	"colossus/internal/pkg/fx/aifx"
 	"colossus/internal/pkg/fx/bucketfx"
 	"colossus/internal/pkg/fx/cachefx"
 	"colossus/internal/pkg/fx/consulfx"
@@ -14,6 +15,7 @@ import (
 	"colossus/pkg/cache"
 
 	"github.com/hashicorp/consul/api"
+
 	"google.golang.org/grpc"
 
 	"go.uber.org/fx"
@@ -32,6 +34,10 @@ func main() {
 		fx.Provide(queuefx.InjectQueue(project)),
 		fx.Provide(bucketfx.InjectBucket("storage")),
 		fx.Provide(grpcfx.InjectGPRCServer(project)),
+		fx.Provide(fx.Annotated{
+			Name:   "names",
+			Target: aifx.InjectNames(project),
+		}),
 		fx.Invoke(register),
 	).Run()
 }
@@ -40,12 +46,13 @@ type params struct {
 	fx.In
 
 	Cache  *cache.Cache
-	Agent  *api.Agent
+	Health *api.Health
 	Server *grpc.Server
+	Names  map[int]string `name:"names"`
 }
 
 func register(p params) {
-	service := gateway.NewService(p.Cache, p.Agent, nil)
+	service := gateway.NewService(p.Cache, p.Health, p.Names)
 	handler := gateway.NewHandler(service)
 	handler.Register(p.Server)
 }

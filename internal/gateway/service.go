@@ -14,22 +14,23 @@ import (
 
 type Service struct {
 	cache   *cache.Cache
-	agent   *api.Agent
+	health  *api.Health
 	clients map[int]aiv1.AIServiceClient
 }
 
 func NewService(
 	c *cache.Cache,
-	agent *api.Agent,
+	health *api.Health,
 	names map[int]string,
 ) *Service {
 	for eventType, name := range names {
 		fmt.Println(eventType, name)
 	}
 
+	health.Service("storage", "", true, nil)
+
 	return &Service{
 		cache:   c,
-		agent:   agent,
 		clients: nil,
 	}
 }

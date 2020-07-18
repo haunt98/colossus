@@ -3,6 +3,7 @@ package aifx
 import (
 	"colossus/internal/ai"
 	"fmt"
+	"strconv"
 
 	"github.com/tidwall/gjson"
 
@@ -55,4 +56,37 @@ func newCMDConfig(kv *api.KV, project string) (ai.CMDConfig, error) {
 		Args:       args,
 		OutputPath: outputPath,
 	}, nil
+}
+
+type ProvideNamesFn func(sugar *zap.SugaredLogger, kv *api.KV) map[int]string
+
+func InjectNames(project string) ProvideNamesFn {
+	return func(sugar *zap.SugaredLogger, kv *api.KV) map[int]string {
+		names, err := newNames(kv, project)
+		if err != nil {
+			sugar.Fatal(err)
+		}
+
+		return names
+	}
+}
+
+func newNames(kv *api.KV, project string) (map[int]string, error) {
+	pair, _, err := kv.Get(project, nil)
+	if err != nil {
+		return nil, fmt.Errorf("consul kv failed to get key %s: %w", project, err)
+	}
+
+	names := make(map[int]string)
+	gNames := gjson.GetBytes(pair.Value, "names")
+	for index, name := range gNames.Map() {
+		i, err := strconv.Atoi(index)
+		if err != nil {
+			return nil, fmt.Errorf("failed to convert string to int: %w", err)
+		}
+
+		names[i] = name.String()
+	}
+
+	return names, nil
 }
