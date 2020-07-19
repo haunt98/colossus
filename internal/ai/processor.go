@@ -120,6 +120,7 @@ func (p *Processor) process(processInfo *ProcessInfo) error {
 	processInfo.StatusInfo = status.Status{
 		Code: status.SuccessfulCode,
 	}
+	processInfo.OutputID = outputID
 
 	return nil
 }

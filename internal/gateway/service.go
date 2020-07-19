@@ -52,7 +52,7 @@ func NewService(
 func (s *Service) Process(ctx context.Context, id string, eventType int) (ProcessInfo, error) {
 	client, ok := s.clients[eventType]
 	if !ok {
-		return ProcessInfo{}, fmt.Errorf("event_type %d is unknown", eventType)
+		return ProcessInfo{}, fmt.Errorf("eventType %d is unknown", eventType)
 	}
 
 	rsp, err := client.Process(ctx, &aiv1.ProcessRequest{
@@ -90,11 +90,11 @@ func (s *Service) GetStatus(ctx context.Context, transID string) (ProcessInfo, e
 
 	client, ok := s.clients[processInfo.EventType]
 	if !ok {
-		return ProcessInfo{}, fmt.Errorf("event_type %d is unknown", processInfo.EventType)
+		return ProcessInfo{}, fmt.Errorf("eventType %d is unknown", processInfo.EventType)
 	}
 
 	rsp, err := client.GetStatus(ctx, &aiv1.GetStatusRequest{
-		TransId: processInfo.TransID,
+		TransId: processInfo.AITransID,
 	})
 	if err != nil {
 		return ProcessInfo{}, fmt.Errorf("client failed to get status: %w", err)
