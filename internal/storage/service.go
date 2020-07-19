@@ -8,6 +8,8 @@ import (
 	"io"
 	"mime/multipart"
 
+	"go.uber.org/zap"
+
 	"github.com/gabriel-vasile/mimetype"
 
 	"github.com/rs/xid"
@@ -28,7 +30,17 @@ func NewService(
 	}
 }
 
-func (s *Service) Upload(ctx context.Context, file multipart.File, size int64) (FileInfo, error) {
+func (s *Service) Upload(ctx context.Context, sugar *zap.SugaredLogger, fileHeader *multipart.FileHeader) (FileInfo, error) {
+	file, err := fileHeader.Open()
+	if err != nil {
+		return FileInfo{}, fmt.Errorf("file header failed to open: %w", err)
+	}
+	defer func() {
+		if err := file.Close(); err != nil {
+			sugar.Error(err)
+		}
+	}()
+
 	guid := xid.New()
 	id := guid.String()
 
@@ -41,14 +53,15 @@ func (s *Service) Upload(ctx context.Context, file multipart.File, size int64) (
 		return FileInfo{}, fmt.Errorf("file failed to seek start: %w", err)
 	}
 
-	if err := s.bucket.PutObjectWithSize(id, file, contentType.String(), size); err != nil {
+	if err := s.bucket.PutObject(id, file, contentType.String(), fileHeader.Size); err != nil {
 		return FileInfo{}, fmt.Errorf("bucket failed to put object: %w", err)
 	}
 
-	fileInfo := FileInfo{
+	var fileInfo = FileInfo{
 		ID:          id,
 		ContentType: contentType.String(),
 		Extension:   contentType.Extension(),
+		Size:        fileHeader.Size,
 	}
 
 	if err := s.cache.SetJSON(ctx, id, fileInfo); err != nil {

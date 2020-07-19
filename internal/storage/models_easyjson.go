@@ -134,6 +134,8 @@ func easyjsonD2b7633eDecodeColossusInternalStorage1(in *jlexer.Lexer, out *FileI
 			out.ContentType = string(in.String())
 		case "extension":
 			out.Extension = string(in.String())
+		case "size":
+			out.Size = int64(in.Int64())
 		default:
 			in.SkipRecursive()
 		}
@@ -162,6 +164,11 @@ func easyjsonD2b7633eEncodeColossusInternalStorage1(out *jwriter.Writer, in File
 		const prefix string = ",\"extension\":"
 		out.RawString(prefix)
 		out.String(string(in.Extension))
+	}
+	{
+		const prefix string = ",\"size\":"
+		out.RawString(prefix)
+		out.Int64(int64(in.Size))
 	}
 	out.RawByte('}')
 }

@@ -42,21 +42,7 @@ func (h *Handler) upload(ctx *gin.Context) {
 		return
 	}
 
-	file, err := fileHeader.Open()
-	if err != nil {
-		ctx.JSON(http.StatusOK, Response{
-			ReturnCode:    status.FailedCode,
-			ReturnMessage: err.Error(),
-		})
-		return
-	}
-	defer func() {
-		if err := file.Close(); err != nil {
-			h.sugar.Error(err)
-		}
-	}()
-
-	fileInfo, err := h.service.Upload(ctx, file, fileHeader.Size)
+	fileInfo, err := h.service.Upload(ctx, h.sugar, fileHeader)
 	if err != nil {
 		ctx.JSON(http.StatusOK, Response{
 			ReturnCode:    status.FailedCode,

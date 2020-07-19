@@ -19,7 +19,7 @@ type Bucket struct {
 func NewBucket(client *minio.Client, name string, presignedExpiration time.Duration) (*Bucket, error) {
 	if exist, errExist := client.BucketExists(name); errExist != nil || !exist {
 		if err := client.MakeBucket(name, ""); err != nil {
-			return nil, fmt.Errorf("minio client failed to make bucket %s: %w", name, err)
+			return nil, fmt.Errorf("client failed to make bucket: %w", err)
 		}
 	}
 
@@ -33,27 +33,17 @@ func NewBucket(client *minio.Client, name string, presignedExpiration time.Durat
 func (b *Bucket) GetObject(objectName string) (*minio.Object, error) {
 	object, err := b.client.GetObject(b.name, objectName, minio.GetObjectOptions{})
 	if err != nil {
-		return nil, err
+		return nil, fmt.Errorf("client failed to get object: %w", err)
 	}
 
 	return object, nil
 }
 
-func (b *Bucket) PutObject(objectName string, reader io.Reader, contentType string) error {
-	if _, err := b.client.PutObject(b.name, objectName, reader, -1, minio.PutObjectOptions{
-		ContentType: contentType,
-	}); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func (b *Bucket) PutObjectWithSize(objectName string, reader io.Reader, contentType string, objectSize int64) error {
+func (b *Bucket) PutObject(objectName string, reader io.Reader, contentType string, objectSize int64) error {
 	if _, err := b.client.PutObject(b.name, objectName, reader, objectSize, minio.PutObjectOptions{
 		ContentType: contentType,
 	}); err != nil {
-		return err
+		return fmt.Errorf("client failed to put object: %w", err)
 	}
 
 	return nil
@@ -61,7 +51,7 @@ func (b *Bucket) PutObjectWithSize(objectName string, reader io.Reader, contentT
 
 func (b *Bucket) FGetObject(objectName, path string) error {
 	if err := b.client.FGetObject(b.name, objectName, path, minio.GetObjectOptions{}); err != nil {
-		return err
+		return fmt.Errorf("client failed to fget object")
 	}
 
 	return nil
@@ -80,7 +70,7 @@ func (b *Bucket) FPutObject(objectName, path string, contentType string) error {
 func (b *Bucket) PresignedGetObject(objectName string) (string, error) {
 	presignedURL, err := b.client.PresignedGetObject(b.name, objectName, b.presignedExpiration, nil)
 	if err != nil {
-		return "", err
+		return "", fmt.Errorf("client failed to presigned get object: %w", err)
 	}
 
 	return presignedURL.String(), nil

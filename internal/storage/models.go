@@ -6,6 +6,7 @@ type FileInfo struct {
 	ID          string `json:"id"`
 	ContentType string `json:"content_type"`
 	Extension   string `json:"extension"`
+	Size        int64  `json:"size"`
 }
 
 type Response struct {
