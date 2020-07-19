@@ -56,13 +56,11 @@ func (c *Cache) SetJSON(ctx context.Context, key string, value interface{}) erro
 	var data []byte
 	var err error
 	if easyValue, ok := value.(easyjson.Marshaler); ok {
-		data, err = easyjson.Marshal(easyValue)
-		if err != nil {
+		if data, err = easyjson.Marshal(easyValue); err != nil {
 			return fmt.Errorf("json failed to marshal %v: %w", value, err)
 		}
 	} else {
-		data, err = json.Marshal(value)
-		if err != nil {
+		if data, err = json.Marshal(value); err != nil {
 			return fmt.Errorf("json failed to marshal %v: %w", value, err)
 		}
 	}
