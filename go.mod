@@ -12,10 +12,12 @@ require (
 	github.com/go-redis/redis/v8 v8.0.0-beta.6
 	github.com/golang/protobuf v1.4.2
 	github.com/google/btree v1.0.0 // indirect
-	github.com/hashicorp/consul v1.8.0
 	github.com/hashicorp/consul/api v1.5.0
 	github.com/hashicorp/go-hclog v0.14.1 // indirect
 	github.com/hashicorp/go-immutable-radix v1.2.0 // indirect
+	github.com/hashicorp/go-msgpack v0.5.5 // indirect
+	github.com/hashicorp/go-sockaddr v1.0.2 // indirect
+	github.com/hashicorp/go-uuid v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
 	github.com/hashicorp/serf v0.9.2 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
@@ -23,6 +25,7 @@ require (
 	github.com/mailru/easyjson v0.7.1
 	github.com/mattn/go-colorable v0.1.7 // indirect
 	github.com/minio/minio-go/v6 v6.0.57
+	github.com/mitchellh/go-testing-interface v1.14.0 // indirect
 	github.com/mitchellh/mapstructure v1.3.2 // indirect
 	github.com/rs/xid v1.2.1
 	github.com/smartystreets/goconvey v1.6.4 // indirect
