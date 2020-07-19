@@ -60,9 +60,9 @@ func newCMDConfig(kv *api.KV, project string) (ai.CMDConfig, error) {
 
 type ProvideNamesFn func(sugar *zap.SugaredLogger, kv *api.KV) map[int]string
 
-func InjectNames(project string) ProvideNamesFn {
+func InjectEventTypes(project string) ProvideNamesFn {
 	return func(sugar *zap.SugaredLogger, kv *api.KV) map[int]string {
-		names, err := newNames(kv, project)
+		names, err := newEventTypes(kv, project)
 		if err != nil {
 			sugar.Fatal(err)
 		}
@@ -71,22 +71,51 @@ func InjectNames(project string) ProvideNamesFn {
 	}
 }
 
-func newNames(kv *api.KV, project string) (map[int]string, error) {
+func newEventTypes(kv *api.KV, project string) (map[int]string, error) {
 	pair, _, err := kv.Get(project, nil)
 	if err != nil {
 		return nil, fmt.Errorf("consul kv failed to get key %s: %w", project, err)
 	}
 
-	names := make(map[int]string)
-	gNames := gjson.GetBytes(pair.Value, "names")
-	for index, name := range gNames.Map() {
-		i, err := strconv.Atoi(index)
+	eventTypes := make(map[int]string)
+	gEventTypes := gjson.GetBytes(pair.Value, "event_types")
+	for i, name := range gEventTypes.Map() {
+		eventType, err := strconv.Atoi(i)
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert string to int: %w", err)
 		}
 
-		names[i] = name.String()
+		eventTypes[eventType] = name.String()
 	}
 
-	return names, nil
+	return eventTypes, nil
+}
+
+type ProvideURLsFn func(sugar *zap.SugaredLogger, kv *api.KV) map[string]string
+
+func InjectUrls(project string) ProvideURLsFn {
+	return func(sugar *zap.SugaredLogger, kv *api.KV) map[string]string {
+		urls, err := newURLs(kv, project)
+		if err != nil {
+			sugar.Fatal(err)
+		}
+
+		return urls
+	}
+}
+
+func newURLs(kv *api.KV, project string) (map[string]string, error) {
+	pair, _, err := kv.Get(project, nil)
+	if err != nil {
+		return nil, fmt.Errorf("consul kv failed to get key %s: %w", project, err)
+	}
+
+	urls := make(map[string]string)
+	gURLs := gjson.GetBytes(pair.Value, "urls")
+	for name, url := range gURLs.Map() {
+
+		urls[name] = url.String()
+	}
+
+	return urls, nil
 }

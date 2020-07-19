@@ -34,7 +34,7 @@ func main() {
 		rabbitmqfx.Module,
 		miniofx.Module,
 		fx.Provide(fx.Annotated{
-			Name:   project,
+			Name:   "project",
 			Target: cachefx.InjectCache(project),
 		}),
 		fx.Provide(queuefx.InjectQueue(project)),

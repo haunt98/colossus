@@ -14,13 +14,9 @@ import (
 	"colossus/internal/pkg/fx/zapfx"
 	"colossus/pkg/cache"
 
-	"go.uber.org/zap"
-
-	"github.com/hashicorp/consul/api"
-
-	"google.golang.org/grpc"
-
 	"go.uber.org/fx"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 func main() {
@@ -37,8 +33,12 @@ func main() {
 		fx.Provide(bucketfx.InjectBucket("storage")),
 		fx.Provide(grpcfx.InjectGPRCServer(project)),
 		fx.Provide(fx.Annotated{
-			Name:   "names",
-			Target: aifx.InjectNames(project),
+			Name:   "event_types",
+			Target: aifx.InjectEventTypes(project),
+		}),
+		fx.Provide(fx.Annotated{
+			Name:   "urls",
+			Target: aifx.InjectUrls(project),
 		}),
 		fx.Invoke(register),
 	).Run()
@@ -47,15 +47,15 @@ func main() {
 type params struct {
 	fx.In
 
-	Sugar  *zap.SugaredLogger
-	Client *api.Client
-	Cache  *cache.Cache
-	Server *grpc.Server
-	Names  map[int]string `name:"names"`
+	Sugar      *zap.SugaredLogger
+	Cache      *cache.Cache
+	Server     *grpc.Server
+	EventTypes map[int]string    `name:"event_types"`
+	URLs       map[string]string `name:"urls"`
 }
 
 func register(p params) {
-	service, err := gateway.NewService(p.Client, p.Cache, p.Names)
+	service, err := gateway.NewService(p.Sugar, p.Cache, p.EventTypes, p.URLs)
 	if err != nil {
 		p.Sugar.Fatal(err)
 	}

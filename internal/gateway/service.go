@@ -6,46 +6,46 @@ import (
 	"colossus/pkg/status"
 	"context"
 	"fmt"
-	"log"
 
-	"github.com/hashicorp/consul/api"
-	"github.com/hashicorp/consul/connect"
 	"github.com/rs/xid"
+	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 type Service struct {
-	client  *api.Client
 	cache   *cache.Cache
 	clients map[int]aiv1.AIServiceClient
 }
 
 func NewService(
-	client *api.Client,
+	sugar *zap.SugaredLogger,
 	c *cache.Cache,
-	names map[int]string,
+	eventTypes map[int]string,
+	urls map[string]string,
 ) (*Service, error) {
-	for eventType, name := range names {
-		fmt.Println(eventType, name)
-	}
+	sugar.Infow("Init clients", "event_types", eventTypes, "urls", urls)
 
-	s1, err := connect.NewService("gateway", client)
-	if err != nil {
-		return nil, err
-	}
-	defer func() {
-		if err := s1.Close(); err != nil {
-			log.Println(err)
+	clients := make(map[int]aiv1.AIServiceClient, len(urls))
+	for eventType, name := range eventTypes {
+		url, ok := urls[name]
+		if !ok {
+			sugar.Error("url unknown", "name", name)
+			continue
 		}
-	}()
 
-	httpClient := s1.HTTPClient()
-	rsp, err := httpClient.Get("http://storage.service.consul/ping")
-	log.Println(rsp, err)
+		conn, err := grpc.Dial(url, grpc.WithInsecure())
+		if err != nil {
+			sugar.Errorw("GRPC failed to dial", "error", err)
+			continue
+		}
+
+		client := aiv1.NewAIServiceClient(conn)
+		clients[eventType] = client
+	}
 
 	return &Service{
-		client:  client,
 		cache:   c,
-		clients: nil,
+		clients: clients,
 	}, nil
 }
 
