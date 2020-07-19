@@ -1,7 +1,6 @@
 package grpcfx
 
 import (
-	"colossus/pkg/network"
 	"context"
 	"fmt"
 	"net"
@@ -15,10 +14,10 @@ import (
 	"google.golang.org/grpc"
 )
 
-type ProvideGRPCServerFn func(lc fx.Lifecycle, sugar *zap.SugaredLogger, kv *api.KV, agent *api.Agent) *grpc.Server
+type ProvideGRPCServerFn func(lc fx.Lifecycle, sugar *zap.SugaredLogger, kv *api.KV) *grpc.Server
 
 func InjectGPRCServer(project string) ProvideGRPCServerFn {
-	return func(lc fx.Lifecycle, sugar *zap.SugaredLogger, kv *api.KV, agent *api.Agent) *grpc.Server {
+	return func(lc fx.Lifecycle, sugar *zap.SugaredLogger, kv *api.KV) *grpc.Server {
 		conf, err := newConfig(kv, project)
 		if err != nil {
 			sugar.Fatal(err)
@@ -31,16 +30,9 @@ func InjectGPRCServer(project string) ProvideGRPCServerFn {
 
 		server := grpc.NewServer()
 
-		ip, err := network.GetIP()
-		if err != nil {
-			sugar.Fatal(err)
-		}
-
-		id := fmt.Sprintf("%s-%s-%d", project, ip, conf.port)
-
 		lc.Append(fx.Hook{
-			OnStart: onStart(sugar, server, listener, conf, agent, project, ip, id),
-			OnStop:  onStop(sugar, server, agent, id),
+			OnStart: onStart(sugar, server, listener, conf),
+			OnStop:  onStop(sugar, server),
 		})
 
 		return server
@@ -67,21 +59,11 @@ func newConfig(kv *api.KV, project string) (config, error) {
 	}, nil
 }
 
-func onStart(sugar *zap.SugaredLogger, server *grpc.Server, listener net.Listener, conf config,
-	agent *api.Agent, project, ip, id string) func(context.Context) error {
+func onStart(sugar *zap.SugaredLogger, server *grpc.Server, listener net.Listener, conf config) func(context.Context) error {
 	return func(ctx context.Context) error {
 		sugar.Infow("Start grpc server", "port", conf.port)
 
 		go func() {
-			if err := agent.ServiceRegister(&api.AgentServiceRegistration{
-				ID:      id,
-				Name:    project,
-				Port:    int(conf.port),
-				Address: ip,
-			}); err != nil {
-				sugar.Fatalw("Consul agent failed to register", "error", err)
-			}
-
 			if err := server.Serve(listener); err != nil {
 				sugar.Fatalw("GRPC server failed to serve", "error", err)
 			}
@@ -91,14 +73,9 @@ func onStart(sugar *zap.SugaredLogger, server *grpc.Server, listener net.Listene
 	}
 }
 
-func onStop(sugar *zap.SugaredLogger, server *grpc.Server,
-	agent *api.Agent, id string) func(context.Context) error {
+func onStop(sugar *zap.SugaredLogger, server *grpc.Server) func(context.Context) error {
 	return func(ctx context.Context) error {
 		sugar.Info("Stop GRPC server")
-
-		if err := agent.ServiceDeregister(id); err != nil {
-			return fmt.Errorf("consul agent failed to deregister: %w", err)
-		}
 
 		server.GracefulStop()
 
