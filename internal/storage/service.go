@@ -49,11 +49,19 @@ func (s *Service) Upload(ctx context.Context, sugar *zap.SugaredLogger, fileHead
 	}
 	checksum := hex.EncodeToString(h.Sum(nil))
 
+	// checksum -> id
+	// id -> FileInfo
+	// FileInfo -> check file exist
 	if cachedID, err := s.cache.GetString(ctx, checksumPrefix(checksum)); err == nil {
 		var cachedFileInfo FileInfo
 		if cachedErr := s.cache.GetJSON(ctx, cachedID, &cachedFileInfo); cachedErr != nil {
 			sugar.Warn("checksum exist but id not exist", "checksum", checksum, "id", cachedID)
 
+			return s.uploadNew(ctx, fileHeader, file, checksum)
+		}
+
+		if _, err := s.bucket.StatObject(cachedFileInfo.ID); err != nil {
+			sugar.Warn("checksum exist id exit but file not exist", "checksum", checksum, "id", cachedID)
 			return s.uploadNew(ctx, fileHeader, file, checksum)
 		}
 

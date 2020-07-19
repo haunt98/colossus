@@ -32,15 +32,17 @@ func NewProcessor(
 	c *cache.Cache,
 	q *queue.Queue,
 	storageCache *cache.Cache,
-	strorageBucket *bucket.Bucket,
+	storageBucket *bucket.Bucket,
 	cmdConf CMDConfig,
 ) *Processor {
+	sugar.Infow("Init processor", "CMDConfig", cmdConf)
+
 	return &Processor{
 		sugar:          sugar,
 		cache:          c,
 		queue:          q,
 		storageCache:   storageCache,
-		strorageBucket: strorageBucket,
+		strorageBucket: storageBucket,
 		cmdConf:        cmdConf,
 	}
 }
@@ -92,7 +94,7 @@ func (p *Processor) process(processInfo *ProcessInfo) error {
 		return fmt.Errorf("os failed to mkdir all: %w", err)
 	}
 
-	inputPath, err := p.downloadInput(processInfo, tmpDir)
+	inputPath, inputPathWithExt, err := p.downloadInput(processInfo, tmpDir)
 	if err != nil {
 		return fmt.Errorf("failed to download input: %w", err)
 	}
@@ -101,13 +103,15 @@ func (p *Processor) process(processInfo *ProcessInfo) error {
 	outputID := guid.String()
 	outputPath := tmpDir + outputID
 
-	cmdConf := p.cmdConf.transform(processInfo.InputID, inputPath, outputID, outputPath)
+	cmdConf := p.cmdConf.transform(processInfo.InputID, inputPath, inputPathWithExt, outputID, outputPath)
+	p.sugar.Infow("Actual", "cmdConfig", cmdConf)
 	cmd := exec.Command(cmdConf.Job, cmdConf.Args...)
 	if err := cmd.Run(); err != nil {
 		return fmt.Errorf("failed to run: %w", err)
 	}
 
 	outputPath = cmdConf.OutputPath
+	p.sugar.Infow("Actual", "outputPath", outputPath)
 
 	if err := p.uploadOutput(processInfo, outputID, outputPath); err != nil {
 		return fmt.Errorf("failed to upload output: %w", err)
@@ -120,18 +124,19 @@ func (p *Processor) process(processInfo *ProcessInfo) error {
 	return nil
 }
 
-func (p *Processor) downloadInput(processInfo *ProcessInfo, tmpDir string) (string, error) {
+func (p *Processor) downloadInput(processInfo *ProcessInfo, tmpDir string) (string, string, error) {
 	var inputFileInfo storage.FileInfo
 	if err := p.storageCache.GetJSON(context.Background(), processInfo.InputID, &inputFileInfo); err != nil {
-		return "", fmt.Errorf("cache failed to get json: %w", err)
+		return "", "", fmt.Errorf("cache failed to get json: %w", err)
 	}
 
-	inputPath := tmpDir + inputFileInfo.ID + inputFileInfo.Extension
-	if err := p.strorageBucket.FGetObject(processInfo.InputID, inputPath); err != nil {
-		return "", fmt.Errorf("bucket failed to fget object: %w", err)
+	inputPathWithExt := tmpDir + inputFileInfo.ID + inputFileInfo.Extension
+	if err := p.strorageBucket.FGetObject(processInfo.InputID, inputPathWithExt); err != nil {
+		return "", "", fmt.Errorf("bucket failed to fget object: %w", err)
 	}
+	inputPath := tmpDir + inputFileInfo.ID
 
-	return inputPath, nil
+	return inputPath, inputPathWithExt, nil
 }
 
 func (p *Processor) uploadOutput(processInfo *ProcessInfo, outputID, outputPath string) error {
@@ -163,9 +168,11 @@ type CMDConfig struct {
 	OutputPath string
 }
 
-func (conf CMDConfig) transform(inputID, inputPath, outputID, outputPath string) CMDConfig {
-	r := strings.NewReplacer("input_id", inputID, "input_path", inputPath,
-		"output_id", outputID, "output_pat", outputPath)
+func (conf CMDConfig) transform(inputID, inputPath, inputPathWithExt,
+	outputID, outputPath string) CMDConfig {
+	r := strings.NewReplacer("{input_id}", inputID, "{input_path}", inputPath,
+		"{input_path_with_ext}", inputPathWithExt,
+		"{output_id}", outputID, "{output_path}", outputPath)
 
 	args := make([]string, len(conf.Args))
 	for i := range conf.Args {

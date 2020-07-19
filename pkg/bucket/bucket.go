@@ -79,3 +79,12 @@ func (b *Bucket) PresignedGetObject(objectName string) (string, error) {
 func DefaultPresignedExpiration() time.Duration {
 	return time.Hour * 24
 }
+
+func (b *Bucket) StatObject(objectName string) (minio.ObjectInfo, error) {
+	objectInfo, err := b.client.StatObject(b.name, objectName, minio.StatObjectOptions{})
+	if err != nil {
+		return minio.ObjectInfo{}, fmt.Errorf("client failed to stat object: %w", err)
+	}
+
+	return objectInfo, nil
+}

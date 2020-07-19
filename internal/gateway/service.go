@@ -23,7 +23,7 @@ func NewService(
 	eventTypes map[int]string,
 	urls map[string]string,
 ) (*Service, error) {
-	sugar.Infow("Init clients", "event_types", eventTypes, "urls", urls)
+	sugar.Infow("Init service", "event_types", eventTypes, "urls", urls)
 
 	clients := make(map[int]aiv1.AIServiceClient, len(urls))
 	for eventType, name := range eventTypes {
