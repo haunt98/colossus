@@ -7,6 +7,7 @@ type FileInfo struct {
 	ContentType string `json:"content_type"`
 	Extension   string `json:"extension"`
 	Size        int64  `json:"size"`
+	Checksum    string `json:"checksum"`
 }
 
 type Response struct {

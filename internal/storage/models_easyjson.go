@@ -136,6 +136,8 @@ func easyjsonD2b7633eDecodeColossusInternalStorage1(in *jlexer.Lexer, out *FileI
 			out.Extension = string(in.String())
 		case "size":
 			out.Size = int64(in.Int64())
+		case "checksum":
+			out.Checksum = string(in.String())
 		default:
 			in.SkipRecursive()
 		}
@@ -169,6 +171,11 @@ func easyjsonD2b7633eEncodeColossusInternalStorage1(out *jwriter.Writer, in File
 		const prefix string = ",\"size\":"
 		out.RawString(prefix)
 		out.Int64(int64(in.Size))
+	}
+	{
+		const prefix string = ",\"checksum\":"
+		out.RawString(prefix)
+		out.String(string(in.Checksum))
 	}
 	out.RawByte('}')
 }

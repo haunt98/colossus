@@ -7,7 +7,6 @@ import (
 	"crypto/sha256"
 	"encoding/hex"
 	"fmt"
-	"hash"
 	"io"
 	"mime/multipart"
 
@@ -21,7 +20,6 @@ import (
 type Service struct {
 	bucket *bucket.Bucket
 	cache  *cache.Cache
-	hash   hash.Hash
 }
 
 func NewService(
@@ -31,7 +29,6 @@ func NewService(
 	return &Service{
 		bucket: b,
 		cache:  c,
-		hash:   sha256.New(),
 	}
 }
 
@@ -46,26 +43,28 @@ func (s *Service) Upload(ctx context.Context, sugar *zap.SugaredLogger, fileHead
 		}
 	}()
 
-	if _, err := io.Copy(s.hash, file); err != nil {
+	h := sha256.New()
+	if _, err := io.Copy(h, file); err != nil {
 		return FileInfo{}, fmt.Errorf("io failed to copy: %w", err)
 	}
+	checksum := hex.EncodeToString(h.Sum(nil))
 
-	encoded := hex.EncodeToString(s.hash.Sum(nil))
-	if cachedID, err := s.cache.GetString(ctx, "checksum:"+encoded); err == nil {
+	if cachedID, err := s.cache.GetString(ctx, checksumPrefix(checksum)); err == nil {
 		var cachedFileInfo FileInfo
 		if cachedErr := s.cache.GetJSON(ctx, cachedID, &cachedFileInfo); cachedErr != nil {
-			sugar.Warn("checksum exist but id not exist", "checksum", encoded, "id", cachedID)
+			sugar.Warn("checksum exist but id not exist", "checksum", checksum, "id", cachedID)
 
-			return s.uploadNew(ctx, fileHeader, file)
+			return s.uploadNew(ctx, fileHeader, file, checksum)
 		}
 
 		return cachedFileInfo, nil
 	}
 
-	return s.uploadNew(ctx, fileHeader, file)
+	return s.uploadNew(ctx, fileHeader, file, checksum)
 }
 
-func (s *Service) uploadNew(ctx context.Context, fileHeader *multipart.FileHeader, file multipart.File) (FileInfo, error) {
+func (s *Service) uploadNew(ctx context.Context, fileHeader *multipart.FileHeader, file multipart.File,
+	checksum string) (FileInfo, error) {
 	guid := xid.New()
 	id := guid.String()
 
@@ -91,10 +90,15 @@ func (s *Service) uploadNew(ctx context.Context, fileHeader *multipart.FileHeade
 		ContentType: contentType.String(),
 		Extension:   contentType.Extension(),
 		Size:        fileHeader.Size,
+		Checksum:    checksum,
 	}
 
 	if err := s.cache.SetJSON(ctx, id, fileInfo); err != nil {
 		return FileInfo{}, fmt.Errorf("cache failed to set json: %w", err)
+	}
+
+	if err := s.cache.SetString(ctx, checksumPrefix(checksum), id); err != nil {
+		return FileInfo{}, fmt.Errorf("cache failed to set string: %w", err)
 	}
 
 	return fileInfo, nil
@@ -107,4 +111,8 @@ func (s *Service) Download(ctx context.Context, id string) (string, error) {
 	}
 
 	return url, nil
+}
+
+func checksumPrefix(checksum string) string {
+	return "checksum:" + checksum
 }
