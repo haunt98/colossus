@@ -49,6 +49,16 @@ func (b *Bucket) PutObject(objectName string, reader io.Reader, contentType stri
 	return nil
 }
 
+func (b *Bucket) PutObjectWithSize(objectName string, reader io.Reader, contentType string, objectSize int64) error {
+	if _, err := b.client.PutObject(b.name, objectName, reader, objectSize, minio.PutObjectOptions{
+		ContentType: contentType,
+	}); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func (b *Bucket) FGetObject(objectName, path string) error {
 	if err := b.client.FGetObject(b.name, objectName, path, minio.GetObjectOptions{}); err != nil {
 		return err

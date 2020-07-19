@@ -5,7 +5,10 @@ import (
 	"colossus/pkg/cache"
 	"context"
 	"fmt"
+	"io"
 	"mime/multipart"
+
+	"github.com/gabriel-vasile/mimetype"
 
 	"github.com/rs/xid"
 )
@@ -25,35 +28,27 @@ func NewService(
 	}
 }
 
-func (s *Service) Upload(ctx context.Context, file multipart.File) (FileInfo, error) {
+func (s *Service) Upload(ctx context.Context, file multipart.File, size int64) (FileInfo, error) {
 	guid := xid.New()
 	id := guid.String()
 
-	//if _, err := file.Seek(0, io.SeekStart); err != nil {
-	//	return FileInfo{}, fmt.Errorf("file failed to seek start: %w", err)
-	//}
-	//
-	//contentType, err := mimetype.DetectReader(file)
-	//if err != nil {
-	//	return FileInfo{}, fmt.Errorf("mimetype failed to detect reader: %w", err)
-	//}
-	//
-	//if _, err := file.Seek(0, io.SeekStart); err != nil {
-	//	return FileInfo{}, fmt.Errorf("file failed to seek start: %w", err)
-	//}
-	//
-	//if err := s.bucket.PutObject(id, file, contentType.String()); err != nil {
-	//	return FileInfo{}, fmt.Errorf("bucket failed to put object: %w", err)
-	//}
+	contentType, err := mimetype.DetectReader(file)
+	if err != nil {
+		return FileInfo{}, fmt.Errorf("mimetype failed to detect reader: %w", err)
+	}
 
-	if err := s.bucket.PutObject(id, file, "image/jpeg"); err != nil {
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		return FileInfo{}, fmt.Errorf("file failed to seek start: %w", err)
+	}
+
+	if err := s.bucket.PutObjectWithSize(id, file, contentType.String(), size); err != nil {
 		return FileInfo{}, fmt.Errorf("bucket failed to put object: %w", err)
 	}
 
 	fileInfo := FileInfo{
-		ID: id,
-		//ContentType: contentType.String(),
-		//Extension:   contentType.Extension(),
+		ID:          id,
+		ContentType: contentType.String(),
+		Extension:   contentType.Extension(),
 	}
 
 	if err := s.cache.SetJSON(ctx, id, fileInfo); err != nil {

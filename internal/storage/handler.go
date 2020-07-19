@@ -56,7 +56,7 @@ func (h *Handler) upload(ctx *gin.Context) {
 		}
 	}()
 
-	fileInfo, err := h.service.Upload(ctx, file)
+	fileInfo, err := h.service.Upload(ctx, file, fileHeader.Size)
 	if err != nil {
 		ctx.JSON(http.StatusOK, Response{
 			ReturnCode:    status.FailedCode,
