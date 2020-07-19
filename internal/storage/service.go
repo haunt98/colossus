@@ -4,7 +4,10 @@ import (
 	"colossus/pkg/bucket"
 	"colossus/pkg/cache"
 	"context"
+	"crypto/sha256"
+	"encoding/hex"
 	"fmt"
+	"hash"
 	"io"
 	"mime/multipart"
 
@@ -18,6 +21,7 @@ import (
 type Service struct {
 	bucket *bucket.Bucket
 	cache  *cache.Cache
+	hash   hash.Hash
 }
 
 func NewService(
@@ -27,6 +31,7 @@ func NewService(
 	return &Service{
 		bucket: b,
 		cache:  c,
+		hash:   sha256.New(),
 	}
 }
 
@@ -41,8 +46,32 @@ func (s *Service) Upload(ctx context.Context, sugar *zap.SugaredLogger, fileHead
 		}
 	}()
 
+	if _, err := io.Copy(s.hash, file); err != nil {
+		return FileInfo{}, fmt.Errorf("io failed to copy: %w", err)
+	}
+
+	encoded := hex.EncodeToString(s.hash.Sum(nil))
+	if cachedID, err := s.cache.GetString(ctx, "checksum:"+encoded); err == nil {
+		var cachedFileInfo FileInfo
+		if cachedErr := s.cache.GetJSON(ctx, cachedID, &cachedFileInfo); cachedErr != nil {
+			sugar.Warn("checksum exist but id not exist", "checksum", encoded, "id", cachedID)
+
+			return s.uploadNew(ctx, fileHeader, file)
+		}
+
+		return cachedFileInfo, nil
+	}
+
+	return s.uploadNew(ctx, fileHeader, file)
+}
+
+func (s *Service) uploadNew(ctx context.Context, fileHeader *multipart.FileHeader, file multipart.File) (FileInfo, error) {
 	guid := xid.New()
 	id := guid.String()
+
+	if _, err := file.Seek(0, io.SeekStart); err != nil {
+		return FileInfo{}, fmt.Errorf("file failed to seek start: %w", err)
+	}
 
 	contentType, err := mimetype.DetectReader(file)
 	if err != nil {
