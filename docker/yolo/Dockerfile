@@ -2,6 +2,7 @@ FROM debian:buster
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
     apt-transport-https \
+    build-essential \
     ca-certificates \
     git \
     && rm -rf /var/lib/apt/lists/*
