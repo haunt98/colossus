@@ -5,15 +5,22 @@ import (
 	"colossus/pkg/status"
 	"context"
 
+	"go.uber.org/zap"
+
 	"google.golang.org/grpc"
 )
 
 type Handler struct {
+	sugar   *zap.SugaredLogger
 	service *Service
 }
 
-func NewHandler(service *Service) *Handler {
+func NewHandler(
+	sugar *zap.SugaredLogger,
+	service *Service,
+) *Handler {
 	return &Handler{
+		sugar:   sugar,
 		service: service,
 	}
 }
@@ -27,6 +34,7 @@ func (s *Handler) Ping(ctx context.Context, req *aiv1.PingRequest) (*aiv1.PingRe
 }
 
 func (s *Handler) Process(ctx context.Context, req *aiv1.ProcessRequest) (*aiv1.ProcessResponse, error) {
+	s.sugar.Infow("Call process", "request", req)
 	processInfo, err := s.service.Process(ctx, req.Id)
 	if err != nil {
 		return &aiv1.ProcessResponse{
@@ -43,6 +51,7 @@ func (s *Handler) Process(ctx context.Context, req *aiv1.ProcessRequest) (*aiv1.
 }
 
 func (s *Handler) GetStatus(ctx context.Context, req *aiv1.GetStatusRequest) (*aiv1.GetStatusResponse, error) {
+	s.sugar.Infow("Call get status", "request", req)
 	processInfo, err := s.service.GetStatus(ctx, req.TransId)
 	if err != nil {
 		return &aiv1.GetStatusResponse{

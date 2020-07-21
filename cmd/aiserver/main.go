@@ -55,6 +55,6 @@ type params struct {
 
 func register(p params) {
 	service := ai.NewService(p.Cache, p.Queue, p.Bucket)
-	handler := ai.NewHandler(service)
+	handler := ai.NewHandler(p.Sugar, service)
 	handler.Register(p.Server)
 }

@@ -7,17 +7,24 @@ import (
 	"encoding/json"
 	"fmt"
 
+	"go.uber.org/zap"
+
 	"github.com/buger/jsonparser"
 
 	"google.golang.org/grpc"
 )
 
 type Handler struct {
+	sugar   *zap.SugaredLogger
 	service *Service
 }
 
-func NewHandler(service *Service) *Handler {
+func NewHandler(
+	sugar *zap.SugaredLogger,
+	service *Service,
+) *Handler {
 	return &Handler{
+		sugar:   sugar,
 		service: service,
 	}
 }
@@ -31,6 +38,8 @@ func (h *Handler) Ping(ctx context.Context, req *gatewayv1.PingRequest) (*gatewa
 }
 
 func (h *Handler) Process(ctx context.Context, req *gatewayv1.ProcessRequest) (*gatewayv1.ProcessResponse, error) {
+	h.sugar.Infow("Call process", "request", req)
+
 	data := []byte(req.Data)
 
 	id, err := jsonparser.GetString(data, "id")
@@ -69,6 +78,8 @@ func (h *Handler) Process(ctx context.Context, req *gatewayv1.ProcessRequest) (*
 }
 
 func (h *Handler) GetStatus(ctx context.Context, req *gatewayv1.GetStatusRequest) (*gatewayv1.GetStatusResponse, error) {
+	h.sugar.Infow("Call get status", "request", req)
+
 	processInfo, err := h.service.GetStatus(ctx, req.TransId)
 	if err != nil {
 		return &gatewayv1.GetStatusResponse{

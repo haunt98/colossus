@@ -60,6 +60,6 @@ func register(p params) {
 		p.Sugar.Fatal(err)
 	}
 
-	handler := gateway.NewHandler(service)
+	handler := gateway.NewHandler(p.Sugar, service)
 	handler.Register(p.Server)
 }

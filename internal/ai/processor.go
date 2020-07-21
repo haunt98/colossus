@@ -35,7 +35,7 @@ func NewProcessor(
 	storageBucket *bucket.Bucket,
 	cmdConf CMDConfig,
 ) *Processor {
-	sugar.Infow("Init processor", "CMDConfig", cmdConf)
+	sugar.Infow("Init processor", "cmd_config", cmdConf)
 
 	return &Processor{
 		sugar:          sugar,
@@ -68,7 +68,7 @@ func (p *Processor) consumeBody(body []byte) error {
 		return fmt.Errorf("json failed to unmarshal: %w", err)
 	}
 
-	p.sugar.Infow("Receive", "ProcessInfo", processInfo)
+	p.sugar.Infow("Consume", "process_info", processInfo)
 
 	if err := p.process(&processInfo); err != nil {
 		p.sugar.Errorw("Failed to process", "error", err)
@@ -78,7 +78,7 @@ func (p *Processor) consumeBody(body []byte) error {
 		}
 	}
 
-	p.sugar.Infow("After", "ProcessInfo", processInfo)
+	p.sugar.Infow("After", "process_info", processInfo)
 
 	if err := p.cache.SetJSON(context.Background(), processInfo.TransID, processInfo); err != nil {
 		return fmt.Errorf("cache failed to set json: %w", err)
