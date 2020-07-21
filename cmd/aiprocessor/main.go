@@ -3,12 +3,12 @@ package main
 import (
 	"colossus/internal/ai"
 	"colossus/internal/pkg/fx/aifx"
+	"colossus/internal/pkg/fx/amqpfx"
 	"colossus/internal/pkg/fx/bucketfx"
 	"colossus/internal/pkg/fx/cachefx"
 	"colossus/internal/pkg/fx/consulfx"
 	"colossus/internal/pkg/fx/miniofx"
 	"colossus/internal/pkg/fx/queuefx"
-	"colossus/internal/pkg/fx/rabbitmqfx"
 	"colossus/internal/pkg/fx/redisfx"
 	"colossus/internal/pkg/fx/zapfx"
 	"colossus/pkg/bucket"
@@ -31,7 +31,7 @@ func main() {
 		zapfx.Module,
 		consulfx.Module,
 		redisfx.Module,
-		rabbitmqfx.Module,
+		amqpfx.Module,
 		miniofx.Module,
 		fx.Provide(fx.Annotated{
 			Name:   "project",

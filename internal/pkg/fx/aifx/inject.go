@@ -46,15 +46,15 @@ func newCMDConfig(kv *api.KV, project string) (ai.CMDConfig, error) {
 		return ai.CMDConfig{}, fmt.Errorf("empty ai.args")
 	}
 
-	outputPath, err := jsonparser.GetString(pair.Value, "ai", "output_path")
+	result, err := jsonparser.GetString(pair.Value, "ai", "result")
 	if err != nil {
-		return ai.CMDConfig{}, fmt.Errorf("failed to get key %s: %w", "ai.output_path", err)
+		return ai.CMDConfig{}, fmt.Errorf("failed to get key %s: %w", "ai.result", err)
 	}
 
 	return ai.CMDConfig{
-		Job:        job,
-		Args:       args,
-		OutputPath: outputPath,
+		Job:    job,
+		Args:   args,
+		Result: result,
 	}, nil
 }
 

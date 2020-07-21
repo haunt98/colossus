@@ -110,7 +110,7 @@ func (p *Processor) process(processInfo *ProcessInfo) error {
 		return fmt.Errorf("failed to run: %w", err)
 	}
 
-	outputPath = cmdConf.OutputPath
+	outputPath = cmdConf.Result
 	p.sugar.Infow("Actual", "outputPath", outputPath)
 
 	if err := p.uploadOutput(processInfo, outputID, outputPath); err != nil {
@@ -164,27 +164,27 @@ func (p *Processor) uploadOutput(processInfo *ProcessInfo, outputID, outputPath 
 }
 
 type CMDConfig struct {
-	Job        string
-	Args       []string
-	OutputPath string
+	Job    string
+	Args   []string
+	Result string
 }
 
 func (conf CMDConfig) transform(inputID, inputPath, inputPathWithExt,
-	outputID, outputPath string) CMDConfig {
+	outputID, result string) CMDConfig {
 	r := strings.NewReplacer("{input_id}", inputID, "{input_path}", inputPath,
 		"{input_path_with_ext}", inputPathWithExt,
-		"{output_id}", outputID, "{output_path}", outputPath)
+		"{output_id}", outputID, "{output_path}", result)
 
 	args := make([]string, len(conf.Args))
 	for i := range conf.Args {
 		args[i] = r.Replace(conf.Args[i])
 	}
 
-	outputPath = r.Replace(conf.OutputPath)
+	result = r.Replace(conf.Result)
 
 	return CMDConfig{
-		Job:        conf.Job,
-		Args:       args,
-		OutputPath: outputPath,
+		Job:    conf.Job,
+		Args:   args,
+		Result: result,
 	}
 }

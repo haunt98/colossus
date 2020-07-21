@@ -1,4 +1,4 @@
-package rabbitmqfx
+package amqpfx
 
 import (
 	"context"
