@@ -12,4 +12,4 @@ RUN apt-get update && apt-get install --no-install-recommends -y \
 RUN git clone --depth=1 https://github.com/AlexeyAB/darknet.git
 WORKDIR /darknet
 RUN ./build.sh
-RUN curl -O -L -C - https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v3_optimal/yolov4.weights
+RUN curl -O -L -C - https://github.com/AlexeyAB/darknet/releases/download/darknet_yolo_v4_pre/yolov4-tiny.weights
