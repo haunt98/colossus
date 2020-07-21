@@ -1,4 +1,3 @@
-FROM cyndie7216/tesseract
-COPY --from=cyndie7216/aiserver /aiserver ./
+FROM cyndie7216/aiserver
 ENV PROJECT tesseract
 CMD ["./aiserver"]
