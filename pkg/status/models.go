@@ -1,7 +1,5 @@
 package status
 
-//go:generate easyjson -all models.go
-
 const (
 	SuccessfulCode = 1
 	ProcessingCode = 5

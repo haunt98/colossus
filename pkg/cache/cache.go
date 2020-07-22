@@ -6,8 +6,6 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mailru/easyjson"
-
 	"github.com/go-redis/redis/v8"
 )
 
@@ -56,34 +54,19 @@ func (c *Cache) GetJSON(ctx context.Context, key string, value interface{}) erro
 		return fmt.Errorf("redis client failed to get: %w", err)
 	}
 
-	if easyValue, ok := value.(easyjson.Unmarshaler); ok {
-		if err := easyjson.Unmarshal(data, easyValue); err != nil {
-			return fmt.Errorf("json failed to unmarshal: %w", err)
-		}
-
-		return nil
-	} else {
-		if err := json.Unmarshal(data, value); err != nil {
-			return fmt.Errorf("json failed to unmarshal: %w", err)
-		}
-
-		return nil
+	if err := json.Unmarshal(data, value); err != nil {
+		return fmt.Errorf("json failed to unmarshal: %w", err)
 	}
+
+	return nil
 }
 
 func (c *Cache) SetJSON(ctx context.Context, key string, value interface{}) error {
 	key = c.generateKeyFn(key)
 
-	var data []byte
-	var err error
-	if easyValue, ok := value.(easyjson.Marshaler); ok {
-		if data, err = easyjson.Marshal(easyValue); err != nil {
-			return fmt.Errorf("json failed to marshal: %w", err)
-		}
-	} else {
-		if data, err = json.Marshal(value); err != nil {
-			return fmt.Errorf("json failed to marshal: %w", err)
-		}
+	data, err := json.Marshal(value)
+	if err != nil {
+		return fmt.Errorf("json failed to marshal: %w", err)
 	}
 
 	if err := c.redisClient.Set(ctx, key, data, c.expiration).Err(); err != nil {

@@ -7,13 +7,13 @@ import (
 	"colossus/pkg/queue"
 	"colossus/pkg/status"
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
 	"strings"
 
 	"github.com/gabriel-vasile/mimetype"
-	"github.com/mailru/easyjson"
 	"github.com/rs/xid"
 	"go.uber.org/zap"
 )
@@ -64,7 +64,7 @@ func (p *Processor) Consume() error {
 
 func (p *Processor) consumeBody(body []byte) error {
 	var processInfo ProcessInfo
-	if err := easyjson.Unmarshal(body, &processInfo); err != nil {
+	if err := json.Unmarshal(body, &processInfo); err != nil {
 		return fmt.Errorf("json failed to unmarshal: %w", err)
 	}
 

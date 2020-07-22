@@ -1,7 +1,5 @@
 package storage
 
-//go:generate easyjson -all models.go
-
 type FileInfo struct {
 	ID          string `json:"id"`
 	ContentType string `json:"content_type"`

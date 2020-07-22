@@ -19,27 +19,26 @@ require (
 	github.com/hashicorp/go-sockaddr v1.0.2 // indirect
 	github.com/hashicorp/go-uuid v1.0.2 // indirect
 	github.com/hashicorp/golang-lru v0.5.4 // indirect
-	github.com/hashicorp/serf v0.9.2 // indirect
+	github.com/hashicorp/serf v0.9.3 // indirect
 	github.com/json-iterator/go v1.1.10 // indirect
 	github.com/klauspost/cpuid v1.3.1 // indirect
-	github.com/mailru/easyjson v0.7.1
 	github.com/mattn/go-colorable v0.1.7 // indirect
 	github.com/minio/minio-go/v6 v6.0.57
 	github.com/mitchellh/go-testing-interface v1.14.0 // indirect
-	github.com/mitchellh/mapstructure v1.3.2 // indirect
+	github.com/mitchellh/mapstructure v1.3.3 // indirect
 	github.com/rs/xid v1.2.1
 	github.com/smartystreets/goconvey v1.6.4 // indirect
 	github.com/streadway/amqp v1.0.0
 	github.com/tidwall/gjson v1.6.0
 	github.com/tidwall/pretty v1.0.1 // indirect
-	go.opentelemetry.io/otel v0.8.0 // indirect
+	go.opentelemetry.io/otel v0.9.0 // indirect
 	go.uber.org/fx v1.13.0
 	go.uber.org/zap v1.15.0
 	golang.org/x/crypto v0.0.0-20200709230013-948cd5f35899 // indirect
 	golang.org/x/net v0.0.0-20200707034311-ab3426394381 // indirect
-	golang.org/x/sys v0.0.0-20200625212154-ddb9806d33ae // indirect
+	golang.org/x/sys v0.0.0-20200720211630-cb9d2d5c5666 // indirect
 	golang.org/x/text v0.3.3 // indirect
-	google.golang.org/genproto v0.0.0-20200715011427-11fb19a81f2c // indirect
+	google.golang.org/genproto v0.0.0-20200722002428-88e341933a54 // indirect
 	google.golang.org/grpc v1.30.0
 	google.golang.org/protobuf v1.25.0
 	gopkg.in/ini.v1 v1.57.0 // indirect

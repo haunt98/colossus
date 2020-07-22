@@ -4,8 +4,6 @@ import (
 	"encoding/json"
 	"fmt"
 
-	"github.com/mailru/easyjson"
-
 	"github.com/streadway/amqp"
 )
 
@@ -32,18 +30,9 @@ func NewQueue(channel *amqp.Channel, name string) (*Queue, error) {
 const jsonContentType = "application/json"
 
 func (q *Queue) PublishJSON(value interface{}) error {
-	var data []byte
-	var err error
-	if easyValue, ok := value.(easyjson.Marshaler); ok {
-		data, err = easyjson.Marshal(easyValue)
-		if err != nil {
-			return fmt.Errorf("json failed to marshal %v: %w", value, err)
-		}
-	} else {
-		data, err = json.Marshal(value)
-		if err != nil {
-			return fmt.Errorf("json failed to marshal %v: %w", value, err)
-		}
+	data, err := json.Marshal(value)
+	if err != nil {
+		return fmt.Errorf("json failed to marshal %v: %w", value, err)
 	}
 
 	if err := q.amqpChannel.Publish("", q.amqpQueue.Name, false, false,
