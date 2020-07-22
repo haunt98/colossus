@@ -1,7 +1,7 @@
 FROM debian:buster
 
 RUN apt-get update && apt-get install --no-install-recommends -y \
-    openjdk-8-jdk \
+    openjdk-11-jdk \
     && rm -rf /var/lib/apt/lists/*
 
 RUN curl -O -L -C - https://www.languagetool.org/download/LanguageTool-5.0.zip \
