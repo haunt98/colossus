@@ -158,3 +158,18 @@ jobs:
           tags: latest
           dockerfile: docker/yoloprocessor/Dockerfile
           cache_froms: cyndie7216/yoloprocessor:latest
+
+  languagetool:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Docker build and push
+        uses: docker/build-push-action@v1
+        with:
+          username: ${{ secrets.DOCKER_USERNAME }}
+          password: ${{ secrets.DOCKER_PASSWORD }}
+          repository: cyndie7216/languagetool
+          tags: latest
+          dockerfile: docker/languagetool/Dockerfile
+          cache_froms: cyndie7216/languagetool:latest
