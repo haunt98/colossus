@@ -9,6 +9,7 @@ import (
 	"context"
 	"encoding/json"
 	"fmt"
+	"io/ioutil"
 	"os"
 	"os/exec"
 	"strings"
@@ -105,9 +106,13 @@ func (p *Processor) process(processInfo *ProcessInfo) error {
 
 	cmdConf := p.cmdConf.transform(processInfo.InputID, inputPath, inputPathWithExt, outputID, outputPath)
 	p.sugar.Infow("Actual", "cmdConfig", cmdConf)
-	cmd := exec.Command(cmdConf.Job, cmdConf.Args...)
-	if err := cmd.Run(); err != nil {
+	cmdOutput, err := exec.Command(cmdConf.Job, cmdConf.Args...).Output()
+	if err != nil {
 		return fmt.Errorf("failed to run: %w", err)
+	}
+	cmdOutputPathWithExt := outputPath + "_cmd_output.txt"
+	if err := ioutil.WriteFile(cmdOutputPathWithExt, cmdOutput, 0644); err != nil {
+		return fmt.Errorf("failed to write file %s: %w", cmdOutputPathWithExt, err)
 	}
 
 	outputPath = cmdConf.Result
