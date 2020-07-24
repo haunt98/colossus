@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: yoloserver-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 14122
+      targetPort: 14122
+  selector:
+    name: yoloserver-app

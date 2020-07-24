@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yoloserver-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: yoloserver-app
+  template:
+    metadata:
+      labels:
+        name: yoloserver-app
+    spec:
+      containers:
+        - name: yoloserver
+          image: cyndie7216/yoloserver
+          ports:
+            - containerPort: 14122
+          env:
+            - name: CONSUL_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: environment
+                  key: consul.address
+            - name: PROJECT
+              value: yolo

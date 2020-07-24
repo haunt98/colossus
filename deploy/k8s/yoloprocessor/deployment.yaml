@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: yoloprocessor-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: yoloprocessor-app
+  template:
+    metadata:
+      labels:
+        name: yoloprocessor-app
+    spec:
+      containers:
+        - name: yoloprocessor
+          image: cyndie7216/yoloprocessor
+          env:
+            - name: CONSUL_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: environment
+                  key: consul.address
+            - name: PROJECT
+              value: yolo
