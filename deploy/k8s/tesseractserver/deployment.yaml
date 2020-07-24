@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tesseractserver-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: tesseractserver-app
+  template:
+    metadata:
+      labels:
+        name: tesseractserver-app
+    spec:
+      containers:
+        - name: tesseractserver
+          image: cyndie7216/tesseractserver
+          ports:
+            - containerPort: 14121
+          env:
+            - name: CONSUL_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: environment
+                  key: consul.address
+            - name: PROJECT
+              value: tesseract

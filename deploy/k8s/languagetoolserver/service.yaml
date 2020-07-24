@@ -1,0 +1,13 @@
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: languagetoolserver-service
+spec:
+  type: LoadBalancer
+  ports:
+    - name: http
+      port: 14123
+      targetPort: 14123
+  selector:
+    name: languagetoolserver-app

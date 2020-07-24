@@ -17,7 +17,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/storage
           tags: latest
-          dockerfile: docker/storage/Dockerfile
+          dockerfile: deploy/docker/storage/Dockerfile
           cache_froms: cyndie7216/storage:latest
 
   gatewayserver:
@@ -32,7 +32,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/gatewayserver
           tags: latest
-          dockerfile: docker/gatewayserver/Dockerfile
+          dockerfile: deploy/docker/gatewayserver/Dockerfile
           cache_froms: cyndie7216/gatewayserver:latest
 
   aiserver:
@@ -47,7 +47,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/aiserver
           tags: latest
-          dockerfile: docker/aiserver/Dockerfile
+          dockerfile: deploy/docker/aiserver/Dockerfile
           cache_froms: cyndie7216/aiserver:latest
 
   aiprocessor:
@@ -62,7 +62,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/aiprocessor
           tags: latest
-          dockerfile: docker/aiprocessor/Dockerfile
+          dockerfile: deploy/docker/aiprocessor/Dockerfile
           cache_froms: cyndie7216/aiprocessor:latest
 
   tesseract:
@@ -77,7 +77,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/tesseract
           tags: latest
-          dockerfile: docker/tesseract/Dockerfile
+          dockerfile: deploy/docker/tesseract/Dockerfile
           cache_froms: cyndie7216/tesseract:latest
 
   tesseractserver:
@@ -93,7 +93,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/tesseractserver
           tags: latest
-          dockerfile: docker/tesseractserver/Dockerfile
+          dockerfile: deploy/docker/tesseractserver/Dockerfile
           cache_froms: cyndie7216/tesseractserver:latest
 
   tesseractprocessor:
@@ -109,7 +109,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/tesseractprocessor
           tags: latest
-          dockerfile: docker/tesseractprocessor/Dockerfile
+          dockerfile: deploy/docker/tesseractprocessor/Dockerfile
           cache_froms: cyndie7216/tesseractprocessor:latest
 
   yolo:
@@ -124,7 +124,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/yolo
           tags: latest
-          dockerfile: docker/yolo/Dockerfile
+          dockerfile: deploy/docker/yolo/Dockerfile
           cache_froms: cyndie7216/yolo:latest
 
   yoloserver:
@@ -140,7 +140,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/yoloserver
           tags: latest
-          dockerfile: docker/yoloserver/Dockerfile
+          dockerfile: deploy/docker/yoloserver/Dockerfile
           cache_froms: cyndie7216/yoloserver:latest
 
   yoloprocessor:
@@ -156,7 +156,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/yoloprocessor
           tags: latest
-          dockerfile: docker/yoloprocessor/Dockerfile
+          dockerfile: deploy/docker/yoloprocessor/Dockerfile
           cache_froms: cyndie7216/yoloprocessor:latest
 
   languagetool:
@@ -171,7 +171,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/languagetool
           tags: latest
-          dockerfile: docker/languagetool/Dockerfile
+          dockerfile: deploy/docker/languagetool/Dockerfile
           cache_froms: cyndie7216/languagetool:latest
 
   languagetoolserver:
@@ -187,7 +187,7 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/languagetoolserver
           tags: latest
-          dockerfile: docker/languagetoolserver/Dockerfile
+          dockerfile: deploy/docker/languagetoolserver/Dockerfile
           cache_froms: cyndie7216/languagetoolserver:latest
 
   languagetoolprocessor:
@@ -203,5 +203,5 @@ jobs:
           password: ${{ secrets.DOCKER_PASSWORD }}
           repository: cyndie7216/languagetoolprocessor
           tags: latest
-          dockerfile: docker/languagetoolprocessor/Dockerfile
+          dockerfile: deploy/docker/languagetoolprocessor/Dockerfile
           cache_froms: cyndie7216/languagetoolprocessor:latest

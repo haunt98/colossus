@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: languagetoolprocessor-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: languagetoolprocessor-app
+  template:
+    metadata:
+      labels:
+        name: languagetoolprocessor-app
+    spec:
+      containers:
+        - name: languagetoolprocessor
+          image: cyndie7216/languagetoolprocessor
+          env:
+            - name: CONSUL_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: environment
+                  key: consul.address
+            - name: PROJECT
+              value: languagetool

@@ -1,0 +1,26 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: tesseractprocessor-app
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      name: tesseractprocessor-app
+  template:
+    metadata:
+      labels:
+        name: tesseractprocessor-app
+    spec:
+      containers:
+        - name: tesseractprocessor
+          image: cyndie7216/tesseractprocessor
+          env:
+            - name: CONSUL_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: environment
+                  key: consul.address
+            - name: PROJECT
+              value: tesseract

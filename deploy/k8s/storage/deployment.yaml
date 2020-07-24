@@ -1,0 +1,27 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: storage-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: storage-app
+  template:
+    metadata:
+      labels:
+        name: storage-app
+    spec:
+      containers:
+        - name: storage
+          image: cyndie7216/storage
+          imagePullPolicy: Always
+          ports:
+            - containerPort: 8080
+          env:
+            - name: CONSUL_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: environment
+                  key: consul.address

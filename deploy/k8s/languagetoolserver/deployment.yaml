@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: languagetoolserver-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: languagetoolserver-app
+  template:
+    metadata:
+      labels:
+        name: languagetoolserver-app
+    spec:
+      containers:
+        - name: languagetoolserver
+          image: cyndie7216/languagetoolserver
+          ports:
+            - containerPort: 14123
+          env:
+            - name: CONSUL_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: environment
+                  key: consul.address
+            - name: PROJECT
+              value: languagetool

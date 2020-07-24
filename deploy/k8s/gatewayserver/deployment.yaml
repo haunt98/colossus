@@ -1,0 +1,28 @@
+---
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: gatewayserver-app
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      name: gatewayserver-app
+  template:
+    metadata:
+      labels:
+        name: gatewayserver-app
+    spec:
+      containers:
+        - name: gatewayserver
+          image: cyndie7216/gatewayserver
+          ports:
+            - containerPort: 8082
+          env:
+            - name: CONSUL_ADDRESS
+              valueFrom:
+                configMapKeyRef:
+                  name: environment
+                  key: consul.address
+            - name: PROJECT
+              value: gateway
