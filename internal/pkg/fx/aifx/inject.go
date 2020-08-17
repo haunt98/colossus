@@ -1,15 +1,13 @@
 package aifx
 
 import (
-	"colossus/internal/ai"
 	"fmt"
 	"strconv"
 
-	"github.com/tidwall/gjson"
-
 	"github.com/buger/jsonparser"
-
 	"github.com/hashicorp/consul/api"
+	"github.com/haunt98/colossus/internal/ai"
+	"github.com/tidwall/gjson"
 	"go.uber.org/zap"
 )
 

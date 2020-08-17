@@ -1,12 +1,12 @@
 package gateway
 
 import (
-	aiv1 "colossus/api/ai/v1"
-	"colossus/pkg/cache"
-	"colossus/pkg/status"
 	"context"
 	"fmt"
 
+	aiv1 "github.com/haunt98/colossus/api/ai/v1"
+	"github.com/haunt98/colossus/pkg/cache"
+	"github.com/haunt98/colossus/pkg/status"
 	"github.com/rs/xid"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

@@ -1,16 +1,14 @@
 package gateway
 
 import (
-	gatewayv1 "colossus/api/gateway/v1"
-	"colossus/pkg/status"
 	"context"
 	"encoding/json"
 	"fmt"
 
-	"go.uber.org/zap"
-
 	"github.com/buger/jsonparser"
-
+	gatewayv1 "github.com/haunt98/colossus/api/gateway/v1"
+	"github.com/haunt98/colossus/pkg/status"
+	"go.uber.org/zap"
 	"google.golang.org/grpc"
 )
 

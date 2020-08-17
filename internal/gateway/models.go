@@ -1,6 +1,6 @@
 package gateway
 
-import "colossus/pkg/status"
+import "github.com/haunt98/colossus/pkg/status"
 
 type ProcessInfo struct {
 	TransID    string        `json:"trans_id"`

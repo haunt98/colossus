@@ -6,9 +6,7 @@ import (
 	"net"
 
 	"github.com/buger/jsonparser"
-
 	"github.com/hashicorp/consul/api"
-
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 	"google.golang.org/grpc"

@@ -1,22 +1,20 @@
 package main
 
 import (
-	"colossus/internal/pkg/fx/amqpfx"
-	"colossus/internal/pkg/fx/bucketfx"
-	"colossus/internal/pkg/fx/cachefx"
-	"colossus/internal/pkg/fx/consulfx"
-	"colossus/internal/pkg/fx/ginfx"
-	"colossus/internal/pkg/fx/miniofx"
-	"colossus/internal/pkg/fx/redisfx"
-	"colossus/internal/pkg/fx/zapfx"
-	"colossus/internal/storage"
-	"colossus/pkg/bucket"
-	"colossus/pkg/cache"
-
 	"github.com/gin-gonic/gin"
-	"go.uber.org/zap"
-
+	"github.com/haunt98/colossus/internal/pkg/fx/amqpfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/bucketfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/cachefx"
+	"github.com/haunt98/colossus/internal/pkg/fx/consulfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/ginfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/miniofx"
+	"github.com/haunt98/colossus/internal/pkg/fx/redisfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/zapfx"
+	"github.com/haunt98/colossus/internal/storage"
+	"github.com/haunt98/colossus/pkg/bucket"
+	"github.com/haunt98/colossus/pkg/cache"
 	"go.uber.org/fx"
+	"go.uber.org/zap"
 )
 
 func main() {

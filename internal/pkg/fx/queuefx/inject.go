@@ -1,11 +1,11 @@
 package queuefx
 
 import (
-	"colossus/pkg/queue"
 	"fmt"
 
 	"github.com/buger/jsonparser"
 	"github.com/hashicorp/consul/api"
+	"github.com/haunt98/colossus/pkg/queue"
 	"github.com/streadway/amqp"
 	"go.uber.org/zap"
 )

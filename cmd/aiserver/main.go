@@ -1,26 +1,25 @@
 package main
 
 import (
-	"colossus/internal/ai"
-	"colossus/internal/pkg/fx/amqpfx"
-	"colossus/internal/pkg/fx/bucketfx"
-	"colossus/internal/pkg/fx/cachefx"
-	"colossus/internal/pkg/fx/consulfx"
-	"colossus/internal/pkg/fx/grpcfx"
-	"colossus/internal/pkg/fx/miniofx"
-	"colossus/internal/pkg/fx/queuefx"
-	"colossus/internal/pkg/fx/redisfx"
-	"colossus/internal/pkg/fx/zapfx"
-	"colossus/pkg/bucket"
-	"colossus/pkg/cache"
-	"colossus/pkg/queue"
 	"log"
 	"os"
 
-	"google.golang.org/grpc"
-
+	"github.com/haunt98/colossus/internal/ai"
+	"github.com/haunt98/colossus/internal/pkg/fx/amqpfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/bucketfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/cachefx"
+	"github.com/haunt98/colossus/internal/pkg/fx/consulfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/grpcfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/miniofx"
+	"github.com/haunt98/colossus/internal/pkg/fx/queuefx"
+	"github.com/haunt98/colossus/internal/pkg/fx/redisfx"
+	"github.com/haunt98/colossus/internal/pkg/fx/zapfx"
+	"github.com/haunt98/colossus/pkg/bucket"
+	"github.com/haunt98/colossus/pkg/cache"
+	"github.com/haunt98/colossus/pkg/queue"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
+	"google.golang.org/grpc"
 )
 
 func main() {

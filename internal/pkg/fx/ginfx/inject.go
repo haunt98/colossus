@@ -1,7 +1,6 @@
 package ginfx
 
 import (
-	"colossus/pkg/middleware"
 	"context"
 	"fmt"
 	"net/http"
@@ -9,6 +8,7 @@ import (
 	"github.com/buger/jsonparser"
 	"github.com/gin-gonic/gin"
 	"github.com/hashicorp/consul/api"
+	"github.com/haunt98/colossus/pkg/middleware"
 	"go.uber.org/fx"
 	"go.uber.org/zap"
 )

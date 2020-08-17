@@ -1,12 +1,11 @@
 package ai
 
 import (
-	aiv1 "colossus/api/ai/v1"
-	"colossus/pkg/status"
 	"context"
 
+	aiv1 "github.com/haunt98/colossus/api/ai/v1"
+	"github.com/haunt98/colossus/pkg/status"
 	"go.uber.org/zap"
-
 	"google.golang.org/grpc"
 )
 

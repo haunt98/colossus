@@ -1,4 +1,4 @@
-module colossus
+module github.com/haunt98/colossus
 
 go 1.14
 

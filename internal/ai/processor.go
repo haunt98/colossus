@@ -1,11 +1,6 @@
 package ai
 
 import (
-	"colossus/internal/storage"
-	"colossus/pkg/bucket"
-	"colossus/pkg/cache"
-	"colossus/pkg/queue"
-	"colossus/pkg/status"
 	"context"
 	"encoding/json"
 	"fmt"
@@ -15,6 +10,11 @@ import (
 	"strings"
 
 	"github.com/gabriel-vasile/mimetype"
+	"github.com/haunt98/colossus/internal/storage"
+	"github.com/haunt98/colossus/pkg/bucket"
+	"github.com/haunt98/colossus/pkg/cache"
+	"github.com/haunt98/colossus/pkg/queue"
+	"github.com/haunt98/colossus/pkg/status"
 	"github.com/rs/xid"
 	"go.uber.org/zap"
 )

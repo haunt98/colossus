@@ -1,12 +1,11 @@
 package storage
 
 import (
-	"colossus/pkg/status"
 	"net/http"
 
-	"go.uber.org/zap"
-
 	"github.com/gin-gonic/gin"
+	"github.com/haunt98/colossus/pkg/status"
+	"go.uber.org/zap"
 )
 
 type Handler struct {

@@ -1,11 +1,11 @@
 package bucketfx
 
 import (
-	"colossus/pkg/bucket"
 	"fmt"
 
 	"github.com/buger/jsonparser"
 	"github.com/hashicorp/consul/api"
+	"github.com/haunt98/colossus/pkg/bucket"
 	"github.com/minio/minio-go/v6"
 	"go.uber.org/zap"
 )

@@ -1,13 +1,12 @@
 package cachefx
 
 import (
-	"colossus/pkg/cache"
 	"fmt"
-
-	"github.com/hashicorp/consul/api"
 
 	"github.com/buger/jsonparser"
 	"github.com/go-redis/redis/v8"
+	"github.com/hashicorp/consul/api"
+	"github.com/haunt98/colossus/pkg/cache"
 	"go.uber.org/zap"
 )
 

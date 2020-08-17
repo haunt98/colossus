@@ -1,13 +1,13 @@
 package ai
 
 import (
-	"colossus/pkg/bucket"
-	"colossus/pkg/cache"
-	"colossus/pkg/queue"
-	"colossus/pkg/status"
 	"context"
 	"fmt"
 
+	"github.com/haunt98/colossus/pkg/bucket"
+	"github.com/haunt98/colossus/pkg/cache"
+	"github.com/haunt98/colossus/pkg/queue"
+	"github.com/haunt98/colossus/pkg/status"
 	"github.com/rs/xid"
 )
 

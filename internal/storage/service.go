@@ -1,8 +1,6 @@
 package storage
 
 import (
-	"colossus/pkg/bucket"
-	"colossus/pkg/cache"
 	"context"
 	"crypto/sha256"
 	"encoding/hex"
@@ -10,11 +8,11 @@ import (
 	"io"
 	"mime/multipart"
 
-	"go.uber.org/zap"
-
 	"github.com/gabriel-vasile/mimetype"
-
+	"github.com/haunt98/colossus/pkg/bucket"
+	"github.com/haunt98/colossus/pkg/cache"
 	"github.com/rs/xid"
+	"go.uber.org/zap"
 )
 
 type Service struct {
