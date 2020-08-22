@@ -49,7 +49,7 @@ type params struct {
 	Sugar      *zap.SugaredLogger
 	Cache      *cache.Cache
 	Server     *grpc.Server
-	EventTypes map[int]string    `name:"event_types"`
+	EventTypes map[string]string `name:"event_types"`
 	URLs       map[string]string `name:"urls"`
 }
 

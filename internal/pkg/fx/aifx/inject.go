@@ -2,7 +2,6 @@ package aifx
 
 import (
 	"fmt"
-	"strconv"
 
 	"github.com/buger/jsonparser"
 	"github.com/hashicorp/consul/api"
@@ -56,10 +55,10 @@ func newCMDConfig(kv *api.KV, project string) (ai.CMDConfig, error) {
 	}, nil
 }
 
-type ProvideNamesFn func(sugar *zap.SugaredLogger, kv *api.KV) map[int]string
+type ProvideNamesFn func(sugar *zap.SugaredLogger, kv *api.KV) map[string]string
 
 func InjectEventTypes(project string) ProvideNamesFn {
-	return func(sugar *zap.SugaredLogger, kv *api.KV) map[int]string {
+	return func(sugar *zap.SugaredLogger, kv *api.KV) map[string]string {
 		names, err := newEventTypes(kv, project)
 		if err != nil {
 			sugar.Fatal(err)
@@ -69,16 +68,16 @@ func InjectEventTypes(project string) ProvideNamesFn {
 	}
 }
 
-func newEventTypes(kv *api.KV, project string) (map[int]string, error) {
+func newEventTypes(kv *api.KV, project string) (map[string]string, error) {
 	pair, _, err := kv.Get(project, nil)
 	if err != nil {
 		return nil, fmt.Errorf("consul kv failed to get key %s: %w", project, err)
 	}
 
-	eventTypes := make(map[int]string)
+	eventTypes := make(map[string]string)
 	gEventTypes := gjson.GetBytes(pair.Value, "event_types")
 	for i, name := range gEventTypes.Map() {
-		eventType, err := strconv.Atoi(i)
+		eventType := i
 		if err != nil {
 			return nil, fmt.Errorf("failed to convert string to int: %w", err)
 		}

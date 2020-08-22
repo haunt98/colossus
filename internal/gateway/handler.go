@@ -50,7 +50,7 @@ func (h *Handler) Process(ctx context.Context, req *gatewayv1.ProcessRequest) (*
 		}, nil
 	}
 
-	eventType, err := jsonparser.GetInt(data, "event_type")
+	eventType, err := jsonparser.GetString(data, "event_type")
 	if err != nil {
 		err = fmt.Errorf("failed to get string %s: %w", "event_type", err)
 
@@ -60,7 +60,7 @@ func (h *Handler) Process(ctx context.Context, req *gatewayv1.ProcessRequest) (*
 		}, nil
 	}
 
-	processInfo, err := h.service.Process(ctx, id, int(eventType))
+	processInfo, err := h.service.Process(ctx, id, eventType)
 	if err != nil {
 		return &gatewayv1.ProcessResponse{
 			ReturnCode:    status.FailedCode,

@@ -14,18 +14,18 @@ import (
 
 type Service struct {
 	cache   *cache.Cache
-	clients map[int]aiv1.AIServiceClient
+	clients map[string]aiv1.AIServiceClient
 }
 
 func NewService(
 	sugar *zap.SugaredLogger,
 	c *cache.Cache,
-	eventTypes map[int]string,
+	eventTypes map[string]string,
 	urls map[string]string,
 ) (*Service, error) {
 	sugar.Infow("Init service", "event_types", eventTypes, "urls", urls)
 
-	clients := make(map[int]aiv1.AIServiceClient, len(urls))
+	clients := make(map[string]aiv1.AIServiceClient, len(urls))
 	for eventType, name := range eventTypes {
 		url, ok := urls[name]
 		if !ok {
@@ -49,10 +49,10 @@ func NewService(
 	}, nil
 }
 
-func (s *Service) Process(ctx context.Context, id string, eventType int) (ProcessInfo, error) {
+func (s *Service) Process(ctx context.Context, id string, eventType string) (ProcessInfo, error) {
 	client, ok := s.clients[eventType]
 	if !ok {
-		return ProcessInfo{}, fmt.Errorf("eventType %d is unknown", eventType)
+		return ProcessInfo{}, fmt.Errorf("eventType %s is unknown", eventType)
 	}
 
 	rsp, err := client.Process(ctx, &aiv1.ProcessRequest{
@@ -90,7 +90,7 @@ func (s *Service) GetStatus(ctx context.Context, transID string) (ProcessInfo, e
 
 	client, ok := s.clients[processInfo.EventType]
 	if !ok {
-		return ProcessInfo{}, fmt.Errorf("eventType %d is unknown", processInfo.EventType)
+		return ProcessInfo{}, fmt.Errorf("eventType %s is unknown", processInfo.EventType)
 	}
 
 	rsp, err := client.GetStatus(ctx, &aiv1.GetStatusRequest{
