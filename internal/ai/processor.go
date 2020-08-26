@@ -5,6 +5,7 @@ import (
 	"encoding/json"
 	"fmt"
 	"io/ioutil"
+	"log"
 	"os"
 	"os/exec"
 	"strings"
@@ -108,8 +109,9 @@ func (p *Processor) process(processInfo *ProcessInfo) error {
 	p.sugar.Infow("Actual", "cmdConfig", cmdConf)
 	cmdOutput, err := exec.Command(cmdConf.Job, cmdConf.Args...).Output()
 	if err != nil {
-		return fmt.Errorf("failed to run: %w", err)
+		log.Printf("failed to run: %s\n", err)
 	}
+
 	cmdOutputPathWithExt := outputPath + "_cmd_output.txt"
 	if err := ioutil.WriteFile(cmdOutputPathWithExt, cmdOutput, 0644); err != nil {
 		return fmt.Errorf("failed to write file %s: %w", cmdOutputPathWithExt, err)
